@@ -1,0 +1,35 @@
+Using Jenkins Pipeline's sshPublisher plugin ("publish over ssh"), is it possible to get the exit code and output of the command ran with execCommand (after artifacts have been transferred over)?
+I'm using the plugin as follows:
+script {
+    echo "Sending artifacts to machine at " + remoteDirectory
+
+    // Use of the ssh publisher plugin over SSH
+    sshPublisher(
+        failOnError: false,
+        publishers: [
+            sshPublisherDesc(
+                configName: "my-drive",
+                transfers: [
+                    sshTransfer(
+                        sourceFiles: mySourceFilesList,
+                        remoteDirectory: remoteDirectory,
+                        flatten: true,
+                        execCommand: commandToExec,
+                        execTimeout: 1800000
+                    )
+                ],
+                sshRetry: [
+                    retries: 0
+                ]
+            )
+        ]
+    )
+    // How can I get the output of execCommand?
+    // If the exit code was 1, I want to perform some special steps
+    // I'd also like to include the output of the command in these steps
+}
+
+The wiki page here says (this is old and from 2011 though):
+
+STDOUT and STDERR from the command execution are recorded in the
+  Jenkins console.
